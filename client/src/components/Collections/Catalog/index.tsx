@@ -1,10 +1,16 @@
 import React, { useEffect } from 'react';
-import { Box, Flex, Heading, Text } from '@chakra-ui/react';
+import { Flex, Box, Container } from '@chakra-ui/react';
 import { useLocation } from 'wouter';
-import { RefreshCw } from 'react-feather';
+// import { RefreshCw } from 'react-feather';
 import { MinterButton } from '../../common';
-import Sidebar from './Sidebar';
-import TokenGrid from './TokenGrid';
+// import Sidebar from './Sidebar';
+// import TokenGrid from './TokenGrid';
+import headerLogo from '../../common/assets/logo.svg';
+import { CatalogItems } from './CatalogItems'
+import { CatalogAbout } from './CatalogAbout'
+import { CatalogFeatures } from './CatalogFeatures'
+import { CatalogInfo } from './CatalogInfo'
+
 
 import { useSelector, useDispatch } from '../../../reducer';
 import {
@@ -40,55 +46,51 @@ export default function Catalog() {
     }
   }, [system.status, setLocation, dispatch]);
 
-  const selectedCollection = state.selectedCollection;
-  if (system.status !== 'WalletConnected' || !selectedCollection) {
-    return null;
-  }
+  // const selectedCollection = state.selectedCollection;
+  // if (system.status !== 'WalletConnected' || !selectedCollection) {
+  //   return null;
+  // }
 
-  const collection = state.collections[selectedCollection];
+  // const collection = state.collections['selectedCollection'];
+
+  const collections = [{
+    time: '00:34:31',
+    desription: 'loren, ismup some test in description writen, loren, ismup some test in description writen loren, ismup some test in description writen',
+    balance: '3434',
+    img: headerLogo
+  },
+  {
+    time: '00:34:31',
+    desription: 'loren, ismup some test in description writen, loren, ismup some test in description writen loren, ismup some test in description writen',
+    balance: '3434',
+    img: headerLogo
+  }, {
+    time: '00:34:31',
+    desription: 'loren, ismup some test in description writen, loren, ismup some test in description writen loren, ismup some test in description writen',
+    balance: '3434',
+    img: headerLogo
+  },
+    , {
+    time: '00:34:31',
+    desription: 'loren, ismup some test in description writen, loren, ismup some test in description writen loren, ismup some test in description writen',
+    balance: '3434',
+    img: headerLogo
+  },
+    , {
+    time: '00:34:31',
+    desription: 'loren, ismup some test in description writen, loren, ismup some test in description writen loren, ismup some test in description writen',
+    balance: '3434',
+    img: headerLogo
+  },]
+
+  const feature = {pot: 300, lotName: 'Lot name', time: '00:23:32', initialTime: '19:23:32', potShare: 20, bid: 0.4}
 
   return (
-    <Flex flex="1" w="100%" minHeight="0">
-      <Flex w="250px" h="100%" flexDir="column" overflowY="scroll">
-        <Sidebar />
-      </Flex>
-      <Flex
-        flexDir="column"
-        h="100%"
-        w="100%"
-        px={10}
-        pt={6}
-        flex="1"
-        bg="brand.brightGray"
-        borderLeftWidth="1px"
-        borderLeftColor="brand.lightBlue"
-        overflowY="scroll"
-        justify="start"
-      >
-        <Flex w="100%" pb={6} justify="space-between" align="center">
-          <Flex flexDir="column">
-            <Heading size="lg">{collection.metadata.name || ''}</Heading>
-            <Text fontFamily="mono" color="brand.lightGray">
-              {collection.address}
-            </Text>
-          </Flex>
-          <MinterButton
-            variant="primaryActionInverted"
-            onClick={() => {
-              const selectedCollection = state.selectedCollection;
-              if (selectedCollection !== null) {
-                dispatch(getContractNftsQuery(selectedCollection));
-              }
-            }}
-          >
-            <Box color="currentcolor">
-              <RefreshCw size={16} strokeWidth="3" />
-            </Box>
-            <Text ml={2}>Refresh</Text>
-          </MinterButton>
-        </Flex>
-        <TokenGrid state={state} walletAddress={system.tzPublicKey} />
-      </Flex>
-    </Flex>
+    <Box>
+      <CatalogFeatures pot={feature.pot} lotName={feature.lotName} time={feature.time} initialTime={feature.initialTime}  potShare={feature.potShare} bid={feature.bid}/>
+      <CatalogItems collections={collections}/>
+      <CatalogAbout />
+      <CatalogInfo/>
+    </Box>
   );
 }

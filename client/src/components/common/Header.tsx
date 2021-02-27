@@ -12,25 +12,14 @@ import {
   MenuItem
 } from '@chakra-ui/react';
 import { ChevronDown, Package, Plus } from 'react-feather';
-import headerLogo from './assets/header-logo.svg';
+import headerLogo from './assets/logo.svg';
 import { useSelector, useDispatch } from '../../reducer';
 import { disconnectWallet } from '../../reducer/async/wallet';
 
-interface HeaderLinkProps {
-  to: string;
-  children: React.ReactNode;
-}
-
-function HeaderLink(props: HeaderLinkProps) {
-  const [location, setLocation] = useLocation();
-  const selected = location === props.to;
+function HeaderLink({ to, children, isFade }) {
   return (
     <Link
-      href={props.to}
-      onClick={e => {
-        e.preventDefault();
-        setLocation(props.to);
-      }}
+      href={to}
       textDecor="none"
       borderRadius="10px"
       alignItems="center"
@@ -38,64 +27,70 @@ function HeaderLink(props: HeaderLinkProps) {
       px={3}
       py={2}
       ml={4}
-      bg={selected ? 'gray.700' : 'none'}
-      color={selected ? 'gray.400' : 'gray.200'}
+      bg={isFade ? 'green.500' : 'gray.400'}
+      color='gray.200'
       display="flex"
       transition="none"
-      _hover={{
-        textDecor: 'none',
-        bg: 'gray.700',
-        color: selected ? 'gray.400' : 'gray.100'
-      }}
+      _hover={isFade
+        ? {
+          textDecor: 'none',
+          bg: 'green.400',
+          color: 'gray.100'
+        }
+        : {
+          textDecor: 'none',
+          bg: 'gray.200',
+          color: 'gray.100'
+        }}
     >
-      {props.children}
+      {children}
     </Link>
   );
 }
 
-function WalletInfo(props: { tzPublicKey: string }) {
-  return (
-    <>
-      <Box borderRadius="100%" width={10} height={10} bg="brand.darkGray" p={1}>
-        <Image
-          src={`https://services.tzkt.io/v1/avatars2/${props.tzPublicKey}`}
-        />
-      </Box>
-      <Text fontFamily="mono" ml={4} mr={2}>
-        {props.tzPublicKey}
-      </Text>
-    </>
-  );
-}
+// function WalletInfo(props: { tzPublicKey: string }) {
+//   return (
+//     <>
+//       <Box borderRadius="100%" width={10} height={10} bg="brand.darkGray" p={1}>
+//         <Image
+//           src={`https://services.tzkt.io/v1/avatars2/${props.tzPublicKey}`}
+//         />
+//       </Box>
+//       <Text fontFamily="mono" ml={4} mr={2}>
+//         {props.tzPublicKey}
+//       </Text>
+//     </>
+//   );
+// }
 
-function WalletDisplay() {
-  const [, setLocation] = useLocation();
-  const system = useSelector(s => s.system);
-  const dispatch = useDispatch();
-  if (system.status !== 'WalletConnected') {
-    return null;
-  }
-  return (
-    <>
-      <WalletInfo tzPublicKey={system.tzPublicKey} />
-      <Menu placement="bottom-start">
-        <MenuButton>
-          <ChevronDown />
-        </MenuButton>
-        <MenuList color="brand.black">
-          <MenuItem
-            onClick={async () => {
-              await dispatch(disconnectWallet());
-              setLocation('/');
-            }}
-          >
-            Disconnect
-          </MenuItem>
-        </MenuList>
-      </Menu>
-    </>
-  );
-}
+// function WalletDisplay() {
+//   const [, setLocation] = useLocation();
+//   const system = useSelector(s => s.system);
+//   const dispatch = useDispatch();
+//   if (system.status !== 'WalletConnected') {
+//     return null;
+//   }
+//   return (
+//     <>
+//       {/* <WalletInfo tzPublicKey={system.tzPublicKey} /> */}
+//       <Menu placement="bottom-start">
+//         <MenuButton>
+//           <ChevronDown />
+//         </MenuButton>
+//         <MenuList color="brand.black">
+//           <MenuItem
+//             onClick={async () => {
+//               await dispatch(disconnectWallet());
+//               setLocation('/');
+//             }}
+//           >
+//             Disconnect
+//           </MenuItem>
+//         </MenuList>
+//       </Menu>
+//     </>
+//   );
+// }
 
 export function Header() {
   const [location, setLocation] = useLocation();
@@ -111,30 +106,37 @@ export function Header() {
       alignItems="center"
       justifyContent="space-between"
     >
-      <Flex flex="1" alignItems="center" color="brand.lightGray">
-        <WalletDisplay />
-      </Flex>
-      <Image
-        maxW="38px"
-        src={headerLogo}
-        onClick={e => {
-          e.preventDefault();
-          setLocation('/collections');
-        }}
-        cursor="pointer"
-      />
+      <Link to="/">
+        <Image
+          width="60px"
+          height="60px"
+          src={headerLogo}
+          borderRadius="50%"
+          onClick={e => {
+            e.preventDefault();
+            setLocation('/collections');
+          }}
+          cursor="pointer"
+          bg="brand.white"
+        />
+      </Link>
+
       <Flex flex="1" justify="flex-end">
-        <HeaderLink to="/collections">
-          <Box color="brand.turquoise">
-            <Package size={16} strokeWidth="3" />
-          </Box>
-          <Text ml={2}>Collections</Text>
-        </HeaderLink>
-        <HeaderLink to="/create">
+        <HeaderLink to="/about" isFade={false}>
           <Box color="brand.blue">
-            <Plus size={16} strokeWidth="3" />
           </Box>
-          <Text ml={2}>New Asset</Text>
+          <Text >About</Text>
+        </HeaderLink>
+        <HeaderLink to="/nft" isFade={false}>
+          <Box color="brand.blue">
+          </Box>
+          <Text >Mint NFT</Text>
+        </HeaderLink>
+        <HeaderLink
+          to="/create"
+          isFade={true}
+        >
+          <Text>Create Auction</Text>
         </HeaderLink>
       </Flex>
     </Flex>
