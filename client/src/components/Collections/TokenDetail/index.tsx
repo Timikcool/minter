@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
-import { AspectRatio, Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
+import { AspectRatio, Box, Code, Flex, Heading, Image, Skeleton, Text } from '@chakra-ui/react';
 import {
   ChevronLeft,
   HelpCircle,
@@ -16,6 +16,10 @@ import {
 } from '../../../reducer/async/queries';
 import TokenDetailsInfo from './TokenDetailsInfo'
 import NFTList from '../../common/NFTList'
+import selectObjectByKeys from '../../../lib/util/selectObjectByKeys';
+import { getContractNfts } from '../../../lib/nfts/queries';
+import { isEmpty } from 'lodash';
+import { is } from 'immer/dist/internal';
 // import headerLogo from './assets/logo.svg';
 
 function NotFound() {
@@ -117,30 +121,68 @@ interface TokenDetailProps {
   tokenId: number;
 }
 
-function TokenDetail({ contractAddress, tokenId }: TokenDetailProps) {
+const TokenDetail = ({ params }) => {
+  let { auctionId } = params;
   const [, setLocation] = useLocation();
   const { system, collections: state } = useSelector(s => s);
   const dispatch = useDispatch();
-  const collection = state.collections['KT1AWMwR6nNCLH3SWVUoqfkRLd9wXE7U9Q76'];
 
-  const collectionUndefined = collection === undefined;
+
+  const [auctions, setAuctions] = useState([]);
+  const [allTokens, setTokens] = useState([]);
+  const [currentAuction, setCurrentAuction] = useState({} as any);
+  const [currentToken, setCurrentToken] = useState({} as any);
+  const [loading, setLoading] = useState(true);
+
+  const fetchAuctionsWithTokens = async () => {
+
+    try {
+      const auctionStorage = await system.betterCallDev.getContractStorage(system.config.contracts.auction);
+      const auctionsMapById = selectObjectByKeys(auctionStorage, {
+        type: 'big_map',
+        name: 'auctions'
+      })?.value;
+
+      const auctionsRaw = await system.betterCallDev.getBigMapKeys(auctionsMapById);
+      const auctions = auctionsRaw.map(auction => {
+        console.log(auction);
+
+        const id = auction?.data.key?.value;
+        const metadataMap = auction?.data?.value?.children;
+        if (!metadataMap) return auction;
+        const metadata = metadataMap.reduce((acc, curr) => ({ ...acc, [curr.name]: curr.value || curr?.children }), {});
+        return { ...metadata, id }
+      })
+      const allTokens = await getContractNfts(system, system.config.contracts.nftFaucet);
+
+      const auction = auctions.find(({ id }) => id === auctionId);
+      const tokenMetadata = allTokens.find(({ id }) => `${id}` === auction?.token?.[1]?.value) as any;
+
+      setCurrentAuction(auction);
+      setCurrentToken(tokenMetadata)
+      setTokens(allTokens);
+      setAuctions(auctions.filter(({ id }) => id !== auctionId));
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
 
   useEffect(() => {
-    if (collectionUndefined) {
-      dispatch(getNftAssetContractQuery(contractAddress));
-    } else {
-      dispatch(getContractNftsQuery(contractAddress));
-    }
-  }, [contractAddress, tokenId, collectionUndefined, dispatch]);
-  // if (!collection?.tokens) {
-  //   return null;
-  // }
 
-  // const token = collection.tokens.find(token => token.id === tokenId);
-  // if (!token) {
-  //   return <NotFound />;
-  // }
-  
+    const init = async () => {
+      setLoading(true);
+      await fetchAuctionsWithTokens()
+      setLoading(false);
+    }
+
+    init();
+
+    const intervalId = setInterval(fetchAuctionsWithTokens, 30000);
+
+    return () => clearInterval(intervalId);
+  }, [])
+
 
 
   const collections = [{
@@ -172,19 +214,29 @@ function TokenDetail({ contractAddress, tokenId }: TokenDetailProps) {
     balance: '3434',
     img: ''
   },]
+
+  if (loading || isEmpty(currentAuction) || isEmpty(currentToken)) {
+    return <Flex flex="1" width="100%" minHeight="0" flexDir='column'>
+      <Skeleton />
+    </Flex>
+  }
+
   return (
     <Flex flex="1" width="100%" minHeight="0" flexDir='column'>
       <TokenDetailsInfo
-        colletionImg='#'
-        lotName={'test lot name'}
-        inititalTime={'19:30:14'}
-        selletName={'test sellet name'}
-        sellersSharePot={ '25'}
-        winnersSharePot={ '75'}
-        minimumBidNumber={ '100'}
-        bigAmount={ '0.4'}
-        potSize={100}/>
-        <NFTList collections={collections}/>
+        auction={currentAuction}
+        colletionImg={ipfsUriToGatewayUrl(system.config.network, currentToken?.artifactUri)}
+        lotName={currentAuction.name}
+        inititalTime={currentAuction.opens_at}
+        selletName={<Code>{currentAuction.owner}</Code>}
+        sellersSharePot={100 - parseInt(currentAuction.leader_percent)}
+        winnersSharePot={currentAuction.leader_percent}
+        minimumBidNumber={currentAuction.min_bank / 1000000}
+        bigAmount={currentAuction.bid_size / 1000000}
+        potSize={currentAuction.bank}
+      />
+
+      <NFTList auctions={auctions} tokensMetadata={allTokens} />
     </Flex>
   );
 }

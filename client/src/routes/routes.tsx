@@ -21,10 +21,10 @@ const routes = [
         isPrivate: true,
     },
     {
-        path: "/collection/:contractAddress/token/:tokenId",
+        path: "/auction/:auctionId",
         component: () => CollectionsTokenDetail,
         isPrivate: true,
     },
-    ]
-    
-    export default routes;
+]
+
+export default routes;

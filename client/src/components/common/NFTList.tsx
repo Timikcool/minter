@@ -1,8 +1,11 @@
 import React from 'react'
 import { Box, Flex, Text, Image, CircularProgress, CircularProgressLabel } from '@chakra-ui/react';
-import BidButton from './TempBidButton';
+import BidButton from './BidButton';
+import { ipfsUriToGatewayUrl } from '../../lib/util/ipfs';
+import { useSelector } from '../../reducer';
 
-const NFTList = ({ collections }) => {
+const NFTList = ({ auctions, tokensMetadata }) => {
+    const { system } = useSelector(s => s);
     return (
         <Flex
             w="100%"
@@ -16,55 +19,58 @@ const NFTList = ({ collections }) => {
             maxWidth="1900px"
             alignSelf='center'>
             {
-                collections.map(({ potSize, time, img, inititalTime, winnersSharePot, bigAmount, lotName }) => (
-                    <Flex
-                        borderWidth="1px"
-                        borderRadius="lg"
-                        overflow="hidden"
-                        p='6'
-                        width="450px"
-                        height='700px'
-                        boxShadow='0 4px 8px 0 rgba(0,0,0,0.2)'
-                        transition='all 0.2s ease-out'
-                        _hover={{
-                            boxShadow: "0 8px 16px 0 rgba(0,0,0,0.2)"
-                        }}
-                        flexDirection='column'
-                        m={16}
-                        pos='relative'
-                        justifyContent='space-between'
-                    >
-                        <Image height="50%" width="100%" src={img} />
-                        <Flex flexDir='column' flex={1}>
-                            <Flex justifyContent='flex-end'>
-                                <Text fontSize="24px" fontWeight='bold'>{time}</Text>
-                            </Flex>
-                            <Flex flexDir='column'my={6}>
-                                <Text fontSize="24px" fontWeight='bold'>
-                                    {lotName}
-                                </Text>
-                                <Text mt='4'>
-                                    <Text fontWeight="bold" as="span">
-                                        Initial Timer:</Text> {inititalTime}
-                                </Text>
-
-                                <Text>
-                                    <Text fontWeight="bold" as="span">
-                                        Winner's Share of a Pot: </Text>{winnersSharePot}%
+                auctions.map(({ bank, time, img, inititalTime, opens_at, closes_at, leader_percent, bid_size, name, token, ...auction }) => {
+                    const currentToken = tokensMetadata.find(({ id }) => `${id}` === token?.[1]?.value) as any;
+                    return (
+                        <Flex
+                            borderWidth="1px"
+                            borderRadius="lg"
+                            overflow="hidden"
+                            p='6'
+                            width="450px"
+                            height='700px'
+                            boxShadow='0 4px 8px 0 rgba(0,0,0,0.2)'
+                            transition='all 0.2s ease-out'
+                            _hover={{
+                                boxShadow: "0 8px 16px 0 rgba(0,0,0,0.2)"
+                            }}
+                            flexDirection='column'
+                            m={16}
+                            pos='relative'
+                            justifyContent='space-between'
+                        >
+                            <Image height="50%" width="100%" src={ipfsUriToGatewayUrl(system.config.network, currentToken?.artifactUri)} />
+                            <Flex flexDir='column' flex={1}>
+                                <Flex justifyContent='flex-end'>
+                                    <Text fontSize="24px" fontWeight='bold'>{closes_at}</Text>
+                                </Flex>
+                                <Flex flexDir='column' my={6}>
+                                    <Text fontSize="24px" fontWeight='bold'>
+                                        {name}
+                                    </Text>
+                                    <Text mt='4'>
+                                        <Text fontWeight="bold" as="span">
+                                            Initial Timer:</Text> {opens_at}
                                     </Text>
 
-                                <Text>
-                                    <Text fontWeight="bold" as="span">
-                                        Bid Amount:</Text> {bigAmount}</Text>
-                            </Flex>
-                            <Text fontSize="24px" fontWeight='bold'>Pot size: {potSize} trx</Text>
-                            <Flex flex='1' justifyContent='flex-end' alignItems='center'>
-                                <BidButton />
-                            </Flex>
-                        </Flex>
+                                    <Text>
+                                        <Text fontWeight="bold" as="span">
+                                            Winner's Share of a Pot: </Text>{leader_percent}%
+                                    </Text>
 
-                    </Flex>
-                ))
+                                    <Text>
+                                        <Text fontWeight="bold" as="span">
+                                            Bid Amount:</Text> {bid_size / 1000000}</Text>
+                                </Flex>
+                                <Text fontSize="24px" fontWeight='bold'>Pot size: {bank} tz</Text>
+                                <Flex flex='1' justifyContent='flex-end' alignItems='center'>
+                                    <BidButton auction={{ ...auction, bank, time, img, inititalTime, opens_at, closes_at, leader_percent, name, token }} />
+                                </Flex>
+                            </Flex>
+
+                        </Flex>
+                    )
+                })
             }
         </Flex>
     )

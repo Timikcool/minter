@@ -76,7 +76,7 @@ export default function CreateNonFungiblePage() {
   const stepIsValid = validateCreateNftStep(state);
 
   return (
-    <Flex flex="1" width="100%" minHeight="0">
+    <Flex flex="1" width="100%" minHeight="calc(100vh - 84px)">
       <Flex w="50%" h="100%" flexDir="column" overflowY="scroll">
         <Flex
           w="100%"
@@ -183,21 +183,21 @@ export default function CreateNonFungiblePage() {
           <Text color="brand.lightGray">(Artwork TBD)</Text>
         </Flex>
       ) : (
-        <Flex
-          bg="brand.brightGray"
-          borderLeftWidth="1px"
-          borderLeftColor="brand.lightBlue"
-          w="50%"
-          h="100%"
-          flexDir="column"
-          align="center"
-          overflowY="scroll"
-          px={28}
-          pt={16}
-        >
-          <Preview />
-        </Flex>
-      )}
+          <Flex
+            bg="brand.brightGray"
+            borderLeftWidth="1px"
+            borderLeftColor="brand.lightBlue"
+            w="50%"
+            h="100%"
+            flexDir="column"
+            align="center"
+            overflowY="scroll"
+            px={28}
+            pt={16}
+          >
+            <Preview />
+          </Flex>
+        )}
     </Flex>
   );
 }

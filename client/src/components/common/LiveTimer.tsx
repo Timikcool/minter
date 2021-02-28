@@ -6,6 +6,6 @@ import Countdown from 'react-countdown';
 export const LiveTimer: React.FC<{ date: string }> = ({ date }) => {
     return (
         // 2021-02-27 19:44:21 +0000 UTC
-        <Countdown date={parse(date, 'YYYY-MM-dd HH:mm:ss xxxx', new Date())} />
+        <Countdown date={parse(date, 'yyyy-MM-dd HH:mm:ss xxxx', new Date())} />
     )
 }

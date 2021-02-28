@@ -1,9 +1,11 @@
 import React from 'react'
 import { Flex, Box, Text, Image, Button } from '@chakra-ui/react';
-import BidButton from '../../common/TempBidButton';
-import background from './assets/main_page-01.svg'
 
-export const CatalogFeatures = ({ pot, lotName, time, initialTime, potShare, bid }) => {
+import background from './assets/main_page-01.svg'
+import BidButton from '../../common/BidButton';
+
+
+export const CatalogFeatures = ({ pot, lotName, time, initialTime, potShare, bid, auction }) => {
     return (
         <Box
             d='flex'
@@ -12,9 +14,9 @@ export const CatalogFeatures = ({ pot, lotName, time, initialTime, potShare, bid
             width="100%"
             alignItems="center"
             pos='relative'
-            >
+        >
             <Flex borderRadius="50%" justify='center' align='center' width="50%">
-            <Image src={background} pos='absolute' width='100%' height='100%' right='0'/>
+                <Image src={background} pos='absolute' width='100%' height='100%' right='0' />
             </Flex>
             <Flex
                 width="35%"
@@ -33,7 +35,7 @@ export const CatalogFeatures = ({ pot, lotName, time, initialTime, potShare, bid
                             <Text py='2'><Text fontWeight="bold" as='span' fontSize='24px'>Lot name:</Text> {lotName}</Text>
                             <Text><Text fontWeight="bold" as='span'>Initital Timer:</Text> {initialTime}</Text>
                             <Text><Text fontWeight="bold" as='span'>Winner's Share of a Pot</Text> {potShare}%</Text>
-                            <Text><Text fontWeight="bold" as='span'>Bid Amoute:</Text> {bid}</Text>
+                            <Text><Text fontWeight="bold" as='span'>Bid Amount:</Text> {bid}</Text>
                         </Box>
                     </Flex>
                     <Flex justify='space-between' my='2'>
@@ -43,8 +45,7 @@ export const CatalogFeatures = ({ pot, lotName, time, initialTime, potShare, bid
                     </Flex>
                 </Flex>
                 <Flex flexDirection='column' mr='2' alignItems='center' alignSelf='flex-end'>
-                    <BidButton/>
-                    <Text mt="2" fontWeight="bold">Press to Bid Now</Text>
+                    <BidButton auction={auction} />
                 </Flex>
 
                 <Box d='flex' alignItems='center' fontWeight="bold" justifyContent='flex-end' width='50%' pos='absolute' top='24px' right='24px'>

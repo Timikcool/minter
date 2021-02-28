@@ -57,6 +57,9 @@ export default function StatusModal(props: StatusModalProps) {
               <Heading size="lg" textAlign="center" color="gray.500" mb={6}>
                 Token creation complete
               </Heading>
+              <Heading size="md" textAlign="center" color="gray.500" mb={6}>
+                Now you can create auction with your brand new NFT!
+              </Heading>
               <MinterButton variant="primaryAction" onClick={() => close()}>
                 Close
               </MinterButton>

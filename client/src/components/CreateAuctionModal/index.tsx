@@ -17,7 +17,10 @@ import {
     SliderFilledTrack,
     SliderThumb, SliderTrack, Text,
     Textarea,
-    useDisclosure
+    useDisclosure,
+    useToast,
+    Spinner,
+    Heading
 } from "@chakra-ui/react";
 import React, { ChangeEvent, useState } from 'react';
 import { useLocation } from "wouter";
@@ -34,12 +37,13 @@ type HTMLElementEvent<T extends HTMLElement> = Event & {
 }
 
 const format = (val) => `${val}%`;
-const parse = (val) => parseInt(val.replace(/^\%/, ""));
+const parse = (val) => val.replace(/^\%/, "");
 
 
 const CreateAuctionModal: React.FC = () => {
+    const toast = useToast()
     const [location, setLocation] = useLocation();
-
+    const [creatingAuction, setCreatingAuction] = useState(false);
     const { system, collections: state } = useSelector(s => s);
     const { isOpen, onOpen, onClose } = useDisclosure()
     // * I'm lazy to use Formik so
@@ -85,39 +89,66 @@ const CreateAuctionModal: React.FC = () => {
     // TODO: create actions for redux ;
     const handleSubmit = async () => {
         try {
-            const opensAt = getUnixTime(date);
-            const bidTimeout = addHours(new Date(0), time).getSeconds();
-            const bidSize = bid * 1000000;
-            const tokenId = parseInt(selectedTokenId);
+            setCreatingAuction(true)
+            const opensAt = `${getUnixTime(date)}`;
+            const bidTimeout = `${time * 3600}`;
+            const bidSize = `${bid * 1000000}`;
+            const tokenId = `${selectedTokenId}`;
+            const minBidCount = `${numberOfBids}`;
+            const leaderPercentage = `${winnerShare}`;
+
             // * I know minter  does that already but who cares
             const auctionContract = await system.toolkit.wallet.at(system.config.contracts.auction);
             const nftContract = await system.toolkit.wallet.at(system.config.contracts.nftFaucet);
             const updateOperatorsParams = [system.tzPublicKey, system.config.contracts.auction, selectedTokenId];
-            const startParams = [bidSize, bidTimeout, winnerShare, sellerShare, opensAt, 1, system.config.contracts.nftFaucet, selectedTokenId];
+            const startParams = [bidSize, bidTimeout, leaderPercentage, minBidCount, opensAt, "1", system.config.contracts.nftFaucet, tokenId];
             console.log({ updateOperatorsParams, startParams });
-
+            const addOperator = new MichelsonMap();
+            addOperator.set("add_operator", { bool: true })
             let methods = auctionContract.parameterSchema.ExtractSignatures();
             console.log(JSON.stringify(methods, null, 2));
             let methods2 = nftContract.parameterSchema.ExtractSignatures();
             console.log(JSON.stringify(methods2, null, 2));
-            let auctionContractParams = auctionContract.methods.start(bidSize, bidTimeout, winnerShare, sellerShare, opensAt, 1, system.config.contracts.nftFaucet, tokenId).toTransferParams();
+            let auctionContractParams = auctionContract.methods.start(bidSize, bidTimeout, lotDescription, leaderPercentage, minBidCount, lotName, opensAt, "1", system.config.contracts.nftFaucet, tokenId).toTransferParams();
             console.log(JSON.stringify(auctionContractParams, null, 2));
-
-
-            const addOperator = new MichelsonMap();
-            addOperator.set("add_operator", { bool: true })
             let nftContractParams = nftContract.methods.update_operators([addOperator, [system.tzPublicKey, system.config.contracts.auction, tokenId]]).toTransferParams();
 
             console.log(JSON.stringify(nftContractParams, null, 2));
 
-            await nftContract.methods.update_operators({ value: [addOperator, system.tzPublicKey, system.config.contracts.auction, selectedTokenId] }).send();
-            await auctionContract.methods.start(bidSize, bidTimeout, winnerShare, numberOfBids, opensAt, 1, [system.config.contracts.nftFaucet, tokenId]).send();
+            // await nftContract.methods.update_operators({ value: [addOperator, system.tzPublicKey, system.config.contracts.auction, selectedTokenId] }).send();
+            const operation = await nftContract.methods.update_operators([
+                {
+                    add_operator: {
+                        owner: system.tzPublicKey,
+                        operator: system.config.contracts.auction,
+                        token_id: selectedTokenId,
+                    },
+                },
+            ]).send();
 
+            await operation.confirmation(3);
+            await auctionContract.methods.start(bidSize, bidTimeout, lotDescription, leaderPercentage, minBidCount, lotName, opensAt, "1", system.config.contracts.nftFaucet, tokenId).send();
+            setCreatingAuction(false)
+            toast({
+                title: "Auction created.",
+                description: "It will be public within a minute",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            })
         } catch (error) {
+            setCreatingAuction(false);
+            toast({
+                title: "Error",
+                status: "error",
+                duration: 9000,
+                isClosable: true,
+            })
             console.log({ error })
         }
 
     }
+
 
     return (
         <>
@@ -166,12 +197,12 @@ const CreateAuctionModal: React.FC = () => {
                                 </FormControl>
                             </Box>
 
-                            <Box>
+                            {/* <Box>
                                 <FormControl id="seller">
                                     <FormLabel>Seller Name</FormLabel>
                                     <Input value={sellerName} maxLength={24} onChange={e => setSellerName(e.target.value)} placeholder="Some Satoshi guy" />
                                 </FormControl>
-                            </Box>
+                            </Box> */}
 
                             <Box>
                                 <FormControl id="timer" isRequired>
@@ -286,6 +317,22 @@ const CreateAuctionModal: React.FC = () => {
 
                     <ModalFooter>
                     </ModalFooter>
+                </ModalContent>
+            </Modal>
+            <Modal
+                isOpen={creatingAuction}
+                onClose={() => setCreatingAuction(false)}
+                closeOnEsc={false}
+                closeOnOverlayClick={false}
+            >
+                <ModalOverlay />
+                <ModalContent mt={40}>
+                    <Flex flexDir="column" align="center" px={4} py={10}>
+                        <Spinner size="xl" mb={6} color="gray.300" />
+                        <Heading size="lg" textAlign="center" color="gray.500">
+                            Creating auction...
+                            </Heading>
+                    </Flex>
                 </ModalContent>
             </Modal>
         </>

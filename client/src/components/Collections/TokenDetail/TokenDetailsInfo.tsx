@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
-import BidButton from '../../common/TempBidButton';
+import BidButton from '../../common/BidButton';
 
 const TokenDetailsInfo = ({
     colletionImg,
@@ -11,7 +11,8 @@ const TokenDetailsInfo = ({
     winnersSharePot,
     minimumBidNumber,
     bigAmount,
-    potSize
+    potSize,
+    auction
 }) => (
     <Flex height='800px' bg='#FAF089' width='100%' justifyContent='center'>
         <Flex maxWidth="1400px" px='4'>
@@ -30,10 +31,6 @@ const TokenDetailsInfo = ({
                     <Box my="8">
                         <Text>
                             <Text fontWeight="bold" as="span">
-                                Sellet Name:
-                            </Text>{selletName}</Text>
-                        <Text>
-                            <Text fontWeight="bold" as="span">
                                 Initial Timer:
                             </Text>{inititalTime}</Text>
                         <Text>
@@ -46,7 +43,7 @@ const TokenDetailsInfo = ({
                             </Text>{winnersSharePot}</Text>
                         <Text>
                             <Text fontWeight="bold" as="span">
-                                Minimum Number of Bids:
+                                Minimum Bank:
                             </Text>{minimumBidNumber}</Text>
                         <Text>
                             <Text fontWeight="bold" as="span">
@@ -55,7 +52,7 @@ const TokenDetailsInfo = ({
                     </Box>
                     <Text fontWeight='bold' fontSize='24px'>Pot size : {potSize}tez</Text>
                     <Flex alignItems='flex-end'>
-                        <BidButton />
+                        <BidButton auction={auction} />
                     </Flex>
                 </Flex>
             </Flex>
