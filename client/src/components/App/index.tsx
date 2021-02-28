@@ -10,7 +10,7 @@ import { Flex } from '@chakra-ui/react';
 import Notifications from '../common/Notifications';
 import { useSelector, useDispatch } from '../../reducer';
 import { reconnectWallet } from '../../reducer/async/wallet';
-
+import Routes from '../../routes'
 export default function App() {
   const dispatch = useDispatch();
   const walletReconnectAttempted = useSelector(
@@ -31,7 +31,8 @@ export default function App() {
     <Flex pos="absolute" w="100%">
       <Flex justifyContent="space-between" width="100%" flexDir="column">
         <Header />
-        <Switch>
+        <Routes/>
+        {/* <Switch>
           <Route path="/">
             <SplashPage />
           </Route>
@@ -49,7 +50,7 @@ export default function App() {
               />
             )}
           </Route>
-        </Switch>
+        </Switch> */}
         <Footer/>
         <Notifications />
       </Flex>
