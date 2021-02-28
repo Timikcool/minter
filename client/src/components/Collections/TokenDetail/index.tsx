@@ -182,7 +182,8 @@ function TokenDetail({ contractAddress, tokenId }: TokenDetailProps) {
         sellersSharePot={ '25'}
         winnersSharePot={ '75'}
         minimumBidNumber={ '100'}
-        bigAmount={ '0.4'} />
+        bigAmount={ '0.4'}
+        potSize={100}/>
         <NFTList collections={collections}/>
     </Flex>
   );

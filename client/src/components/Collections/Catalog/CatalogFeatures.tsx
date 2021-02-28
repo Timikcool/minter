@@ -1,6 +1,7 @@
 import React from 'react'
 import { Flex, Box, Text, Image, Button } from '@chakra-ui/react';
 import BidButton from '../../common/TempBidButton';
+import background from './assets/main_page-01.svg'
 
 export const CatalogFeatures = ({ pot, lotName, time, initialTime, potShare, bid }) => {
     return (
@@ -10,12 +11,10 @@ export const CatalogFeatures = ({ pot, lotName, time, initialTime, potShare, bid
             height='88vh'
             width="100%"
             alignItems="center"
-            backgroundImage={'url(/static/media/main_page-01.f1f053cc.svg)'}
-            backgroundPosition="center"
-            backgroundRepeat="no-repeat"
-            backgroundSize='cover'>
+            pos='relative'
+            >
             <Flex borderRadius="50%" justify='center' align='center' width="50%">
-            
+            <Image src={background} pos='absolute' width='100%' height='100%' right='0'/>
             </Flex>
             <Flex
                 width="35%"

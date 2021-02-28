@@ -10,7 +10,8 @@ const TokenDetailsInfo = ({
     sellersSharePot,
     winnersSharePot,
     minimumBidNumber,
-    bigAmount
+    bigAmount,
+    potSize
 }) => (
     <Flex height='800px' bg='#FAF089' width='100%' justifyContent='center'>
         <Flex maxWidth="1400px" px='4'>
@@ -52,7 +53,7 @@ const TokenDetailsInfo = ({
                                 Bid Amount:
                             </Text>{bigAmount}</Text>
                     </Box>
-                    <Text fontWeight='bold' fontSize='24px'>Pot size : tez</Text>
+                    <Text fontWeight='bold' fontSize='24px'>Pot size : {potSize}tez</Text>
                     <Flex alignItems='flex-end'>
                         <BidButton />
                     </Flex>
