@@ -1,11 +1,11 @@
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './components/App';
-import * as serviceWorker from './serviceWorker';
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { Provider } from 'react-redux';
+import App from './components/App';
+import './index.css';
 import { store } from './reducer';
+import * as serviceWorker from './serviceWorker';
 
 const Button = {
   variants: {
@@ -185,32 +185,32 @@ const theme = extendTheme({
       yellow: '#FAF089'
     }
   },
-  components: {
-    Button,
-    Link,
-    Input: {
-      variants: {
-        outline: {
-          field: {
-            borderRadius: '1px',
-            _focus: {
-              boxShadow: '0px 0px 0px 4px rgba(15, 97, 255, 0.1)'
-            }
-          }
-        }
-      }
-    },
-    Textarea: {
-      variants: {
-        outline: {
-          borderRadius: '1px',
-          _focus: {
-            boxShadow: '0px 0px 0px 4px rgba(15, 97, 255, 0.1)'
-          }
-        }
-      }
-    }
-  },
+  // components: {
+  //   Button,
+  //   Link,
+  //   Input: {
+  //     variants: {
+  //       outline: {
+  //         field: {
+  //           borderRadius: '1px',
+  //           _focus: {
+  //             boxShadow: '0px 0px 0px 4px rgba(15, 97, 255, 0.1)'
+  //           }
+  //         }
+  //       }
+  //     }
+  //   },
+  //   Textarea: {
+  //     variants: {
+  //       outline: {
+  //         borderRadius: '1px',
+  //         _focus: {
+  //           boxShadow: '0px 0px 0px 4px rgba(15, 97, 255, 0.1)'
+  //         }
+  //       }
+  //     }
+  //   }
+  // },
   fonts: {
     body: "'Roboto', sans-serif",
     heading: "'Roboto', sans-serif",

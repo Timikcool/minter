@@ -1,20 +1,21 @@
-import React from 'react';
-import { useLocation } from 'wouter';
 import {
   Box,
   Flex,
   Image,
   Link,
-  Text,
+
   Menu,
   MenuButton,
-  MenuList,
-  MenuItem
+
+  MenuItem, MenuList, Text
 } from '@chakra-ui/react';
+import React from 'react';
 import { ChevronDown, Package, Plus } from 'react-feather';
 import headerLogo from './assets/logo.svg';
-import { useSelector, useDispatch } from '../../reducer';
+import { useLocation } from 'wouter';
+import { useDispatch, useSelector } from '../../reducer';
 import { disconnectWallet } from '../../reducer/async/wallet';
+import CreateAuctionModal from '../CreateAuctionModal';
 
 function HeaderLink({ to, children, isFade }) {
   return (
@@ -121,19 +122,14 @@ export function Header() {
           </Box>
           <Text >About</Text>
         </HeaderLink>
-        <HeaderLink to="/nft" isFade={false}>
+        <HeaderLink to="/create" isFade={false}>
           <Box color="brand.blue">
           </Box>
           <Text >Mint NFT</Text>
         </HeaderLink>
-        <HeaderLink
-          to="/create"
-          isFade={true}
-        >
-          <Text>Create Auction</Text>
-        </HeaderLink>
+        <CreateAuctionModal />
       </Flex>
-    </Flex>
+    </Flex >
   );
 }
 

@@ -17,8 +17,16 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
-    "noImplicitUseStrict": true,
-    "strict": false
+    // The below makes typescript more strict about types
+    // Consider changing them if you run into problems with
+    // existing libraries
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "noImplicitThis": false,
+    "strictPropertyInitialization": false,
+    "strictBindCallApply": false,
+    "strictFunctionTypes": false
   },
   "include": [
     "src"

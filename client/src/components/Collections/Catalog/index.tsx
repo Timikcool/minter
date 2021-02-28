@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Flex, Box, Container } from '@chakra-ui/react';
 import { useLocation } from 'wouter';
 // import { RefreshCw } from 'react-feather';
@@ -18,6 +18,8 @@ import {
   getWalletAssetContractsQuery
 } from '../../../reducer/async/queries';
 import { selectCollection } from '../../../reducer/slices/collections';
+import { getContractNfts } from '../../../lib/nfts/queries';
+import selectObjectByKeys from '../../../lib/util/selectObjectByKeys';
 
 export default function Catalog() {
   const [, setLocation] = useLocation();
@@ -53,44 +55,61 @@ export default function Catalog() {
 
   // const collection = state.collections['selectedCollection'];
 
-  const collections = [{
-    time: '00:34:31',
-    desription: 'loren, ismup some test in description writen, loren, ismup some test in description writen loren, ismup some test in description writen',
-    balance: '3434',
-    img: headerLogo
-  },
-  {
-    time: '00:34:31',
-    desription: 'loren, ismup some test in description writen, loren, ismup some test in description writen loren, ismup some test in description writen',
-    balance: '3434',
-    img: headerLogo
-  }, {
-    time: '00:34:31',
-    desription: 'loren, ismup some test in description writen, loren, ismup some test in description writen loren, ismup some test in description writen',
-    balance: '3434',
-    img: headerLogo
-  },
-    , {
-    time: '00:34:31',
-    desription: 'loren, ismup some test in description writen, loren, ismup some test in description writen loren, ismup some test in description writen',
-    balance: '3434',
-    img: headerLogo
-  },
-    , {
-    time: '00:34:31',
-    desription: 'loren, ismup some test in description writen, loren, ismup some test in description writen loren, ismup some test in description writen',
-    balance: '3434',
-    img: headerLogo
-  },]
+  const [auctions, setAuctions] = useState([]);
+  const [allTokens, setTokens] = useState([]);
 
-  const feature = {pot: 300, lotName: 'Lot name', time: '00:23:32', initialTime: '19:23:32', potShare: 20, bid: 0.4}
+  const fetchAuctionsWithTokens = async () => {
+
+    try {
+      const auctionStorage = await system.betterCallDev.getContractStorage(system.config.contracts.auction);
+      const auctionsMapById = selectObjectByKeys(auctionStorage, {
+        type: 'big_map',
+        name: 'auctions'
+      })?.value;
+
+      const auctionsRaw = await system.betterCallDev.getBigMapKeys(auctionsMapById);
+      const auctions = auctionsRaw.map(auction => {
+        const id = selectObjectByKeys(auction, { name: 'key' })?.value;
+        const metadataMap = auction?.data?.value?.children;
+        if (!metadataMap) return auction;
+        const metadata = metadataMap.reduce((acc, curr) => ({ ...acc, [curr.name]: curr.value || curr?.children }), {});
+        return { ...metadata, id }
+      })
+      const allTokens = await getContractNfts(system, system.config.contracts.nftFaucet);
+
+      setTokens(allTokens);
+      setAuctions(auctions);
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
+
+  useEffect(() => {
+
+    fetchAuctionsWithTokens()
+    const intervalId = setInterval(fetchAuctionsWithTokens, 30000);
+
+    return () => clearInterval(intervalId);
+  }, [])
+
+  console.log({ auctions, allTokens });
+
+
+  const feature = { pot: 300, lotName: 'Lot name', time: '00:23:32', initialTime: '19:23:32', potShare: 20, bid: 0.4 }
 
   return (
     <Flex flexDir='column' alignItems='center'>
       <CatalogFeatures pot={feature.pot} lotName={feature.lotName} time={feature.time} initialTime={feature.initialTime}  potShare={feature.potShare} bid={feature.bid}/>
-      <NFTList collections={collections}/>
+      {/* <NFTList collections={collections}/> */}
       <CatalogAbout />
       <CatalogInfo/>
     </Flex>
+    // <Box>
+    //   <CatalogFeatures pot={feature.pot} lotName={feature.lotName} time={feature.time} initialTime={feature.initialTime} potShare={feature.potShare} bid={feature.bid} />
+    //   <CatalogItems auctions={auctions} tokensMetadata={allTokens} />
+    //   <CatalogAbout />
+    //   <CatalogInfo />
+    // </Box>
   );
 }

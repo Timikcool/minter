@@ -6,9 +6,9 @@ import {
     Link,
     Text,
 } from '@chakra-ui/react';
-import { faTelegramPlane } from '@fortawesome/free-brands-svg-icons';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faTelegramPlane } from '@fortawesome/free-brands-svg-icons';
+// import { faGithub } from '@fortawesome/free-brands-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Footer = () => {
     return (
@@ -25,10 +25,10 @@ const Footer = () => {
             <Flex flexDirection='column'>
                 <Flex justifyContent='space-around'>
                     <Link href='#'>
-                        <FontAwesomeIcon icon={faTelegramPlane} color='#0088cc' size='3x' />
+                        {/* <FontAwesomeIcon icon={faTelegramPlane} color='#0088cc' size='3x' /> */}
                     </Link>
                     <Link href='#'>
-                        <FontAwesomeIcon icon={faGithub} color='#1D2227' size='3x' />
+                        {/* <FontAwesomeIcon icon={faGithub} color='#1D2227' size='3x' /> */}
                     </Link>
                 </Flex>
                 <Link to="https://nftbutton.com/" color='#0000EE' textDecoration='underline' fontFamily='IBM Plex Mono'>yo@nftbutton.com</Link>
