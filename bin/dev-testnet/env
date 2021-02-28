@@ -1,2 +1,2 @@
-TEZOS_RPC_URL=https://edonet-tezos.giganode.io
+TEZOS_RPC_URL=https://edonet.smartpy.io/
 TZ_NETWORK=testnet

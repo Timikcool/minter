@@ -15,6 +15,7 @@ export interface Config {
   };
   contracts: {
     nftFaucet: string;
+    auction: string;
   };
 }
 

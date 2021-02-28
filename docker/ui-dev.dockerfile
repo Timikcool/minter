@@ -4,7 +4,7 @@ WORKDIR /usr/src/app/client
 
 COPY client/package.json client/yarn.lock ./
 
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 COPY client .
 
