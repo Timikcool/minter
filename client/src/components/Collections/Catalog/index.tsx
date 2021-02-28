@@ -6,7 +6,7 @@ import { MinterButton } from '../../common';
 // import Sidebar from './Sidebar';
 // import TokenGrid from './TokenGrid';
 import headerLogo from '../../common/assets/logo.svg';
-import { CatalogItems } from './CatalogItems'
+import NFTList from '../../common/NFTList'
 import { CatalogAbout } from './CatalogAbout'
 import { CatalogFeatures } from './CatalogFeatures'
 import { CatalogInfo } from './CatalogInfo'
@@ -86,11 +86,11 @@ export default function Catalog() {
   const feature = {pot: 300, lotName: 'Lot name', time: '00:23:32', initialTime: '19:23:32', potShare: 20, bid: 0.4}
 
   return (
-    <Box>
+    <Flex flexDir='column' alignItems='center'>
       <CatalogFeatures pot={feature.pot} lotName={feature.lotName} time={feature.time} initialTime={feature.initialTime}  potShare={feature.potShare} bid={feature.bid}/>
-      <CatalogItems collections={collections}/>
+      <NFTList collections={collections}/>
       <CatalogAbout />
       <CatalogInfo/>
-    </Box>
+    </Flex>
   );
 }

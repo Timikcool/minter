@@ -21,26 +21,19 @@ function HeaderLink({ to, children, isFade }) {
     <Link
       href={to}
       textDecor="none"
-      borderRadius="10px"
+      borderRadius="3px"
       alignItems="center"
       fontWeight="600"
+      height='48px'
       px={3}
       py={2}
       ml={4}
-      bg={isFade ? 'green.500' : 'gray.400'}
-      color='gray.200'
+      bg={isFade ? 'brand.yellow' : 'brand.white'}
+      color='brand.black'
       display="flex"
       transition="none"
-      _hover={isFade
-        ? {
-          textDecor: 'none',
-          bg: 'green.400',
-          color: 'gray.100'
-        }
-        : {
-          textDecor: 'none',
-          bg: 'gray.200',
-          color: 'gray.100'
+      _hover={{
+          textDecor: 'underline',
         }}
     >
       {children}
@@ -100,11 +93,12 @@ export function Header() {
   return (
     <Flex
       width="100%"
-      bg="brand.black"
+      bg="brand.white"
       paddingX={4}
       paddingY={3}
       alignItems="center"
-      justifyContent="space-between"
+      justifyContent="space-around"
+      height='140px'
     >
       <Link to="/">
         <Image
@@ -121,7 +115,7 @@ export function Header() {
         />
       </Link>
 
-      <Flex flex="1" justify="flex-end">
+      <Flex justify="space-between" width='30%'>
         <HeaderLink to="/about" isFade={false}>
           <Box color="brand.blue">
           </Box>

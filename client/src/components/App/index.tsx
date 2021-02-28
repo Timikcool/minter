@@ -29,28 +29,9 @@ export default function App() {
 
   return (
     <Flex pos="absolute" w="100%">
-      <Flex justifyContent="space-between" width="100%" flexDir="column">
+      <Flex justifyContent="space-between" width="100%" flexDir="column" a>
         <Header />
         <Routes/>
-        {/* <Switch>
-          <Route path="/">
-            <SplashPage />
-          </Route>
-          <Route path="/create">
-            <CreateNonFungiblePage />
-          </Route>
-          <Route path="/collections">
-            <CollectionsCatalog />
-          </Route>
-          <Route path="/collection/:contractAddress/token/:tokenId">
-            {({ contractAddress, tokenId }) => (
-              <CollectionsTokenDetail
-                contractAddress={contractAddress}
-                tokenId={parseInt(tokenId)}
-              />
-            )}
-          </Route>
-        </Switch> */}
         <Footer/>
         <Notifications />
       </Flex>

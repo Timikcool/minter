@@ -3,10 +3,9 @@ import { Route } from 'wouter';
 import { useLocation } from 'wouter';
 import { useSelector } from '../reducer';
 
-const PrivateRoute = ({ children, ...rest }) =>{
+const PrivateRoute = ({ children: Children, ...rest }) =>{
   const system = useSelector(s => s.system);
   const [location, setLocation] = useLocation();
-  
   if (system.status !== 'WalletConnected' && location !== '/') {
     setLocation('/');
   }else if(system.status === 'WalletConnected' && location == '/'){
@@ -15,7 +14,9 @@ const PrivateRoute = ({ children, ...rest }) =>{
 
   return (
     <Route {...rest}>
-        {children}
+        {(props) => (
+          <Children {...props}/>
+        )}
     </Route>
   );
 }

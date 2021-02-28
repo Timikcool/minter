@@ -9,6 +9,7 @@ const Routes = () => {
       <Switch>
         {routes.map(({ isPrivate, path, component}, id)=> {
           if (isPrivate) {
+
             return (
               <PrivateRoute path={path} key={id}>
                 {component()}

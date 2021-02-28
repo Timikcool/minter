@@ -22,12 +22,7 @@ const routes = [
     },
     {
         path: "/collection/:contractAddress/token/:tokenId",
-        component: () => ({ contractAddress, tokenId }) => (
-            <CollectionsTokenDetail
-              contractAddress={contractAddress}
-              tokenId={parseInt(tokenId)}
-            />
-          ),
+        component: () => CollectionsTokenDetail,
         isPrivate: true,
     },
     ]

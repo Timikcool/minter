@@ -16,7 +16,6 @@ const Footer = () => {
             justifyContent='space-between'
             px={20}
             py={10}
-            flex="1"
             bg="brand.brightGray"
         >
             <Flex flexDirection='column' fontFamily='IBM Plex Mono' fontWeight='600'>

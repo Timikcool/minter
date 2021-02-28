@@ -181,7 +181,8 @@ const theme = extendTheme({
       red: '#FF4161',
       white: '#FFF',
       tezos: '#2c7df7',
-      telegram: '#0088cc'
+      telegram: '#0088cc',
+      yellow: '#FAF089'
     }
   },
   components: {
